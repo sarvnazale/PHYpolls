@@ -1,1 +1,39 @@
-"Hello! I made this website so we could crowdsource information about the physics lab and see what other people are doing. I hope you find it useful!"
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Sheet Graph</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vQy8p_8A6lUPVEJSeaJLs5_TTWTUgQ1Y1z_q4qoOACWiXhqS3mknqQgczvBBtRRXnTxmbw71VMGN0AL/pubhtml')
+                .then(response => response.text())
+                .then(data => {
+                    var dataArray = google.visualization.arrayToDataTable(parseData(data));
+
+                    var options = {
+                        // Add chart options here
+                        title: 'My Google Sheet Chart',
+                        curveType: 'function',
+                        legend: { position: 'bottom' }
+                    };
+
+                    var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+                    chart.draw(dataArray, options);
+                });
+        }
+
+        function parseData(data) {
+            // Assuming CSV format: Convert CSV to a 2D array
+            return data.split('\n').map(row => row.split(','));
+        }
+    </script>
+</head>
+<body>
+    <div id="chart_div" style="width: 100%; height: 500px;"></div>
+</body>
+</html>
